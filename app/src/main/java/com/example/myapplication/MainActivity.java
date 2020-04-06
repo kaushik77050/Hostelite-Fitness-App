@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -34,14 +35,21 @@ public class MainActivity extends AppCompatActivity {
 
         if(numberRows < 1 ){
             //Run Setup
-            db.insert("food",
-                    "food_id, food_name, food_manufactor_name, food_serving_size, food_serving_mesurment, food_energy_calculated",
-                    "NULL, 'Egg, whole, cooked, hard-boiled', 'Prior', '136.0', 'g', '211'");
-
-            db.insert("food",
-                    "food_id, food_name, food_manufactor_name, food_serving_size, food_serving_mesurment, food_energy_calculated",
-                    "NULL, 'Stake', 'Glide', '106.0', 'g', '232'");
+            DBSetupInsert setupInsert = new DBSetupInsert(this);
+            setupInsert.insertAllCategories();
+            setupInsert.insertAllFood();
         }
+
+        /* Check if there is user in the user table */
+        // Count rows in user table
+        numberRows = db.count("users");
+        if(numberRows < 1){
+            // Sign up
+            Toast.makeText(this, "You are only few fields away from signing up...", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(MainActivity.this, SignUp.class);
+            startActivity(i);
+        }
+
 
         //Close Database
         db.close();
